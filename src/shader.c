@@ -12,6 +12,11 @@ typedef struct {
 
 static void init(CmScene *scene) {
   (void)cm_scene_alloc_data(scene, sizeof(ShaderToy));
+  ShaderToy *toy = scene->data;
+
+  RGFW_window *window = cm_app_window();
+  toy->resolution[0] = window->r.w;
+  toy->resolution[1] = window->r.h;
 }
 
 static void update(CmScene *scene, double dt) {
@@ -47,12 +52,9 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
   CmScene *scene = cm_scene_push(parent, shader);
   ShaderToy *toy = scene->data;
 
-  RGFW_window *window = cm_app_window();
-  toy->resolution[0] = window->r.w;
-  toy->resolution[1] = window->r.h;
-
   Arena arena = {0};
-  Str content = file_read_str(filename, &arena, ErrPanic);
+  Str content = file_read_str(filename, &arena, error);
+  error_propagate(error, { goto defer; });
 
   StringBuilder sb = sb_init(&arena);
   Str header = STR("#version 430 core\n"
@@ -86,8 +88,10 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
     (void)str_take(&msg, 2);
     int line = str_chop_i64(&msg) - str_count(header, STR("\n"));
     error_set_msg("%d" STR_FMT, line, STR_ARG(msg));
+    goto defer;
   });
-  arena_free(&arena);
 
+defer:
+  arena_free(&arena);
   return scene;
 }
