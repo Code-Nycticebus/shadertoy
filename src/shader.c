@@ -26,7 +26,7 @@ static void update(CmScene *scene, double dt) {
 
   cm_shader_bind(&toy->shader);
   cm_shader_set_f32(&toy->shader, STR("iTime"), toy->time);
-  cm_shader_set_i32(&toy->shader, STR("iFrame"), toy->frame);
+  cm_shader_set_f32(&toy->shader, STR("iFrame"), toy->frame);
   cm_shader_set_vec2(&toy->shader, STR("iResolution"), toy->resolution);
 
   RGFW_window *window = cm_app_window();
@@ -59,7 +59,7 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
   Str header = STR("#version 430 core\n"
                    "layout(location = 0) out vec4 f_color;\n"
                    "uniform float iTime;\n"
-                   "uniform int iFrame;\n"
+                   "uniform float iFrame;\n"
                    "uniform vec2 iResolution;\n"
                    "uniform vec4 iMouse;\n"
                    "uniform float iTimeDelta;\n");
