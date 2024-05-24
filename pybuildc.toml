@@ -1,9 +1,8 @@
 [pybuildc]
 name = "shadertoy"
-cc = "clang"
 
 [exe]
 shadertoy="src/toy.c"
 
-[deps]
+[libs]
 claymore = {dir="libs/claymore/claymore", type="pybuildc"}
