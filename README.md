@@ -18,10 +18,10 @@ pybuildc run
 
 These are the provided uniforms:
 ```glsl
-uniform vec3 iResolution;
+uniform vec3  iResolution;
 uniform float iTime;
 uniform float iTimeDelta;
 uniform float iFrame;
-uniform vec4 iMouse;
+uniform vec4  iMouse;
 ```
 
