@@ -1,0 +1,3 @@
+[submodule "libs/claymore"]
+	path = libs/claymore
+	url = https://github.com/Code-Nycticebus/claymore.git
