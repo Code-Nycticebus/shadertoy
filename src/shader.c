@@ -35,7 +35,6 @@ static void update(CmScene *scene, double dt) {
       (vec4){window->event.point.x, window->event.point.y, 0, 1});
 
   cm_shader_set_f32(&toy->shader, STR("iTimeDelta"), dt);
-  cm_shader_set_f32(&toy->shader, STR("iFrameRate"), 1 / dt);
 
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 1);
 }
@@ -63,7 +62,6 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
                    "uniform int iFrame;\n"
                    "uniform vec2 iResolution;\n"
                    "uniform vec4 iMouse;\n"
-                   "uniform float iFrameRate;\n"
                    "uniform float iTimeDelta;\n");
   sb_append_str(&sb, header);
   sb_append_str(&sb, content);
