@@ -8,33 +8,40 @@ typedef struct {
   float time;
   vec2 resolution;
   i32 frame;
-} ShaderToy;
+  vec4 mouse;
+} Shader;
 
 static void init(CmScene *scene) {
-  (void)cm_scene_alloc_data(scene, sizeof(ShaderToy));
-  ShaderToy *toy = scene->data;
+  (void)cm_scene_alloc_data(scene, sizeof(Shader));
+  Shader *shader = scene->data;
 
   RGFW_window *window = cm_app_window();
-  toy->resolution[0] = window->r.w;
-  toy->resolution[1] = window->r.h;
+  shader->resolution[0] = window->r.w;
+  shader->resolution[1] = window->r.h;
+
+  shader->mouse[0] = window->event.point.x;
+  shader->mouse[1] = window->event.point.y;
+  shader->mouse[2] = 0;
+  shader->mouse[3] = 1;
+}
+
+static void event(CmScene *scene, CmEvent *event) {
+  Shader *shader = scene->data;
+  cm_event_cursor(event, {
+    shader->mouse[0] = cursor->pos[0];
+    shader->mouse[1] = cursor->pos[1];
+  });
 }
 
 static void update(CmScene *scene, double dt) {
-  ShaderToy *toy = scene->data;
-  toy->time += dt;
-  toy->frame++;
+  Shader *shader = scene->data;
 
-  cm_shader_bind(&toy->shader);
-  cm_shader_set_f32(&toy->shader, STR("iTime"), toy->time);
-  cm_shader_set_f32(&toy->shader, STR("iFrame"), toy->frame);
-  cm_shader_set_vec2(&toy->shader, STR("iResolution"), toy->resolution);
-
-  RGFW_window *window = cm_app_window();
-  cm_shader_set_vec4(
-      &toy->shader, STR("iMouse"),
-      (vec4){window->event.point.x, window->event.point.y, 0, 1});
-
-  cm_shader_set_f32(&toy->shader, STR("iTimeDelta"), dt);
+  cm_shader_bind(&shader->shader);
+  cm_shader_set_f32(&shader->shader, STR("iTime"), shader->time += dt);
+  cm_shader_set_f32(&shader->shader, STR("iFrame"), shader->frame++);
+  cm_shader_set_vec2(&shader->shader, STR("iResolution"), shader->resolution);
+  cm_shader_set_vec4(&shader->shader, STR("iMouse"), shader->mouse);
+  cm_shader_set_f32(&shader->shader, STR("iTimeDelta"), dt);
 
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 1);
 }
@@ -43,13 +50,14 @@ static CmSceneInterface *shader(void) {
   static CmSceneInterface interface = {
       .init = init,
       .update = update,
+      .event = event,
   };
   return &interface;
 }
 
 CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
   CmScene *scene = cm_scene_push(parent, shader);
-  ShaderToy *toy = scene->data;
+  Shader *toy = scene->data;
 
   Arena arena = {0};
   Str content = file_read_str(filename, &arena, error);
