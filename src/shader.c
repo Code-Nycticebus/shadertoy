@@ -3,6 +3,31 @@
 
 #include "glad.h"
 
+static const Str header = STR_STATIC( //
+    "#version 430 core\n"
+    "layout(location = 0) out vec4 f_color;\n"
+    "uniform float iTime;\n"
+    "uniform float iFrame;\n"
+    "uniform vec2 iResolution;\n"
+    "uniform vec4 iMouse;\n"
+    "uniform float iTimeDelta;\n");
+
+static const Str footer = STR_STATIC( //
+    "void main() {\n"
+    "  mainImage(f_color, gl_FragCoord.xy);\n"
+    "}\n");
+
+static const Str vs = STR_STATIC( //
+    "#version 430 core\n"
+    "void main() {\n"
+    "  gl_Position = vec4(\n"
+    "    (gl_VertexID >> 0 & 1) * 2 - 1,\n"
+    "    (gl_VertexID >> 1 & 1) * 2 - 1,\n"
+    "    0.0,\n"
+    "    1.0\n"
+    "  );\n"
+    "}\n");
+
 typedef struct {
   CmShader shader;
   float time;
@@ -64,31 +89,12 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
   error_propagate(error, { goto defer; });
 
   StringBuilder sb = sb_init(&arena);
-  Str header = STR("#version 430 core\n"
-                   "layout(location = 0) out vec4 f_color;\n"
-                   "uniform float iTime;\n"
-                   "uniform float iFrame;\n"
-                   "uniform vec2 iResolution;\n"
-                   "uniform vec4 iMouse;\n"
-                   "uniform float iTimeDelta;\n");
   sb_append_str(&sb, header);
   sb_append_str(&sb, content);
-  sb_append_str(&sb, STR("void main() {\n"
-                         "  mainImage(f_color, gl_FragCoord.xy);\n"
-                         "}\n"));
+  sb_append_str(&sb, footer);
 
-  toy->shader =
-      cm_shader_from_memory(&scene->gpu,
-                            STR("#version 430 core\n"
-                                "void main() {\n"
-                                "  gl_Position = vec4(\n"
-                                "    (gl_VertexID >> 0 & 1) * 2 - 1,\n"
-                                "    (gl_VertexID >> 1 & 1) * 2 - 1,\n"
-                                "    0.0,\n"
-                                "    1.0\n"
-                                "  );\n"
-                                "}\n"),
-                            sb_to_str(&sb), error);
+  Str fs = sb_to_str(&sb);
+  toy->shader = cm_shader_from_memory(&scene->gpu, vs, fs, error);
   error_propagate(error, {
     Str msg = error_msg();
     (void)str_take(&msg, 2);

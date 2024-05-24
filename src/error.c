@@ -1,5 +1,9 @@
 #include "toy.h"
 
+static const Str font = STR_STATIC("assets/Ubuntu.ttf");
+static const float font_size = 20.f;
+static const vec2 offset = {20.f, 20.f};
+
 typedef struct {
   CmCamera2D camera;
   CmFont *font;
@@ -8,18 +12,15 @@ typedef struct {
 
 static void init(CmScene *scene) {
   ErrorDisplay *display = cm_scene_alloc_data(scene, sizeof(ErrorDisplay));
-  display->font =
-      cm_font_init(&scene->gpu, STR("assets/Ubuntu.ttf"), 20.f, ErrPanic);
-
+  display->font = cm_font_init(&scene->gpu, font, font_size, ErrPanic);
   cm_camera2d_screen(&display->camera);
 }
 
-static void update(CmScene *scene, double dt) {
-  (void)dt;
+static void update(CmScene *scene, double UNUSED dt) {
   ErrorDisplay *display = scene->data;
 
   cm_renderer2d_begin(&display->camera);
-  cm_font(display->font, (vec2){20, 20}, display->message);
+  cm_font(display->font, offset, display->message);
   cm_renderer2d_end();
 }
 

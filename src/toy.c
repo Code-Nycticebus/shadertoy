@@ -9,17 +9,20 @@
 #define MTIME(s) (s).st_mtime
 #endif
 
+static const float interval = 1.f;
+
 typedef struct {
   CmScene *child;
   Str filename;
+  int mtime;
+  float timer;
 } Toy;
 
-static void load_shader_scene(CmScene *scene) {
+static void reload_shader(CmScene *scene) {
   Toy *toy = scene->data;
   if (toy->child != NULL) {
     cm_scene_delete(scene, toy->child);
   }
-  // Reload
   Error error = ErrNew;
   toy->child = shader_init(scene, toy->filename, &error);
   error_context(&error, {
@@ -31,8 +34,7 @@ static void load_shader_scene(CmScene *scene) {
 
 static void init(CmScene *scene) {
   Toy *toy = cm_scene_alloc_data(scene, sizeof(Toy));
-
-  // keep file watcher in mind!
+  toy->timer = interval;
   toy->filename = STR("toy.fs.glsl");
 }
 
@@ -50,18 +52,17 @@ static void event(CmScene *scene, CmEvent *event) {
 
 static void update(CmScene *scene, double dt) {
   Toy *toy = scene->data;
-  const float interval = 1.0f;
-  static float timer = interval;
-  timer += dt;
-  if (interval < timer) {
-    timer = 0;
-    static int last = 0;
+  toy->timer += dt;
+  if (interval < toy->timer) {
+    toy->timer = 0;
+
     struct stat file;
     stat(toy->filename.data, &file);
     int mtime = MTIME(file);
-    if (last != mtime) {
-      last = mtime;
-      load_shader_scene(scene);
+
+    if (toy->mtime != mtime) {
+      toy->mtime = mtime;
+      reload_shader(scene);
     }
   }
 }
