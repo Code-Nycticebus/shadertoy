@@ -20,12 +20,12 @@ static void update(CmScene *scene, double dt) {
   toy->frame++;
 
   cm_shader_bind(&toy->shader);
-  cm_shader_set_f32(&toy->shader, STR("u_time"), toy->time);
-  cm_shader_set_i32(&toy->shader, STR("u_frame"), toy->frame);
-  cm_shader_set_vec2(&toy->shader, STR("u_resolution"), toy->resolution);
+  cm_shader_set_f32(&toy->shader, STR("iTime"), toy->time);
+  cm_shader_set_i32(&toy->shader, STR("iFrame"), toy->frame);
+  cm_shader_set_vec2(&toy->shader, STR("iResolution"), toy->resolution);
 
-  cm_shader_set_f32(&toy->shader, STR("u_deltatime"), dt);
-  cm_shader_set_f32(&toy->shader, STR("u_fps"), 1 / dt);
+  cm_shader_set_f32(&toy->shader, STR("iTimeDelta"), dt);
+  cm_shader_set_f32(&toy->shader, STR("iFrameRate"), 1 / dt);
 
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, 1);
 }
@@ -52,11 +52,11 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
   StringBuilder sb = sb_init(&arena);
   Str header = STR("#version 430 core\n"
                    "layout(location = 0) out vec4 f_color;\n"
-                   "uniform float u_time;\n"
-                   "uniform int u_frame;\n"
-                   "uniform vec2 u_resolution;\n"
-                   "uniform float u_deltatime;\n"
-                   "uniform float u_fps;\n");
+                   "uniform float iTime;\n"
+                   "uniform int iFrame;\n"
+                   "uniform vec2 iResolution;\n"
+                   "uniform float iFrameRate;\n"
+                   "uniform float iTimeDelta;\n");
   sb_append_str(&sb, header);
   sb_append_str(&sb, content);
   sb_append_str(&sb, STR("void main() {\n"
