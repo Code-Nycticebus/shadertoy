@@ -10,9 +10,8 @@ vec3 palette(float t) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-  vec2 uv = fragCoord.xy / iResolution * 2 - 1;
-  vec2 uv0 = uv;
-  // vec2 uv0 = uv * u_resolution.x / u_resolution.y;
+  vec2 uv = fragCoord.xy / iResolution.xy * 2 - 1;
+  vec2 uv0 = uv * iResolution.x / iResolution.y;
   vec3 finalColor = vec3(0);
 
   for (float i = 0.0; i < 2.0; i++) {
