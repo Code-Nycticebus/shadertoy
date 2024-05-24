@@ -9,7 +9,7 @@ typedef struct {
 static void init(CmScene *scene) {
   ErrorDisplay *display = cm_scene_alloc_data(scene, sizeof(ErrorDisplay));
   display->font =
-      cm_font_init(&scene->gpu, STR("assets/fonts/Ubuntu.ttf"), 20.f, ErrPanic);
+      cm_font_init(&scene->gpu, STR("assets/Ubuntu.ttf"), 20.f, ErrPanic);
 
   cm_camera2d_screen(&display->camera);
 }
