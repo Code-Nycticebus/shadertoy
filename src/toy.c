@@ -10,7 +10,6 @@
 #endif
 
 typedef struct {
-  Error error;
   CmScene *child;
   Str filename;
 } Toy;
@@ -21,8 +20,9 @@ static void load_shader_scene(CmScene *scene) {
     cm_scene_delete(scene, toy->child);
   }
   // Reload
-  toy->child = shader_init(scene, toy->filename, &toy->error);
-  error_context(&toy->error, {
+  Error error = ErrNew;
+  toy->child = shader_init(scene, toy->filename, &error);
+  error_context(&error, {
     cm_scene_delete(scene, toy->child);
     toy->child = error_display_init(scene, error_msg());
     error_except();
