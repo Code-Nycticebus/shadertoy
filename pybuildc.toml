@@ -5,4 +5,4 @@ name = "shadertoy"
 shadertoy="src/toy.c"
 
 [libs]
-claymore = {dir="libs/claymore/claymore", type="pybuildc"}
+claymore = { dir= "libs/claymore/claymore", type = "pybuildc" }
