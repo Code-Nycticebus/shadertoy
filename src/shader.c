@@ -24,6 +24,11 @@ static void update(CmScene *scene, double dt) {
   cm_shader_set_i32(&toy->shader, STR("iFrame"), toy->frame);
   cm_shader_set_vec2(&toy->shader, STR("iResolution"), toy->resolution);
 
+  RGFW_window *window = cm_app_window();
+  cm_shader_set_vec4(
+      &toy->shader, STR("iMouse"),
+      (vec4){window->event.point.x, window->event.point.y, 0, 1});
+
   cm_shader_set_f32(&toy->shader, STR("iTimeDelta"), dt);
   cm_shader_set_f32(&toy->shader, STR("iFrameRate"), 1 / dt);
 
@@ -55,6 +60,7 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
                    "uniform float iTime;\n"
                    "uniform int iFrame;\n"
                    "uniform vec2 iResolution;\n"
+                   "uniform vec4 iMouse;\n"
                    "uniform float iFrameRate;\n"
                    "uniform float iTimeDelta;\n");
   sb_append_str(&sb, header);
