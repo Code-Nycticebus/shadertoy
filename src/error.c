@@ -13,15 +13,15 @@ typedef struct {
 static void init(CmScene *scene) {
   ErrorDisplay *display = cm_scene_set_data(scene, sizeof(ErrorDisplay));
   display->font = cm_font_init(&scene->gpu, font, font_size, ErrPanic);
-  cm_camera2d_screen(&display->camera);
+  cm_camera2D_screen(&display->camera);
 }
 
 static void update(CmScene *scene, double UNUSED dt) {
   ErrorDisplay *display = scene->data;
 
-  cm_renderer2d_begin(&display->camera);
+  cm_2D_begin(&display->camera);
   cm_font(display->font, offset, display->message);
-  cm_renderer2d_end();
+  cm_2D_end();
 }
 
 static CmSceneInterface *error_display(void) {
