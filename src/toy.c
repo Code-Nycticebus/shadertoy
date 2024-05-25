@@ -33,7 +33,7 @@ static void reload_shader(CmScene *scene) {
 }
 
 static void init(CmScene *scene) {
-  Toy *toy = cm_scene_alloc_data(scene, sizeof(Toy));
+  Toy *toy = cm_scene_set_data(scene, sizeof(Toy));
   toy->timer = interval;
   toy->filename = STR("toy.fs.glsl");
 }

@@ -11,7 +11,7 @@ typedef struct {
 } ErrorDisplay;
 
 static void init(CmScene *scene) {
-  ErrorDisplay *display = cm_scene_alloc_data(scene, sizeof(ErrorDisplay));
+  ErrorDisplay *display = cm_scene_set_data(scene, sizeof(ErrorDisplay));
   display->font = cm_font_init(&scene->gpu, font, font_size, ErrPanic);
   cm_camera2d_screen(&display->camera);
 }

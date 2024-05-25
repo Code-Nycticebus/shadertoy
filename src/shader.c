@@ -37,8 +37,7 @@ typedef struct {
 } Shader;
 
 static void init(CmScene *scene) {
-  (void)cm_scene_alloc_data(scene, sizeof(Shader));
-  Shader *shader = scene->data;
+  Shader *shader = cm_scene_set_data(scene, sizeof(Shader));
 
   RGFW_window *window = cm_app_window();
   shader->resolution[0] = window->r.w;
