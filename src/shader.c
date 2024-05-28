@@ -87,6 +87,12 @@ CmScene *shader_init(CmScene *parent, Str filename, Error *error) {
   Str content = file_read_str(filename, &arena, error);
   error_propagate(error, { goto defer; });
 
+  Str function = STR("void mainImage(out vec4 fragColor, in vec2 fragCoord)");
+  if (!str_contains(content, function)) {
+    error_emit(error, -1, "'" STR_FMT "' not found", STR_ARG(function));
+    goto defer;
+  }
+
   StringBuilder sb = sb_init(&arena);
   sb_append_str(&sb, header);
   sb_append_str(&sb, content);
