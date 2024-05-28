@@ -16,7 +16,7 @@ static void init(CmScene *scene) {
   cm_camera2D_screen(&display->camera);
 }
 
-static void update(CmScene *scene, double UNUSED dt) {
+static void frame_update(CmScene *scene, double UNUSED dt) {
   ErrorDisplay *display = scene->data;
 
   cm_2D_begin(&display->camera);
@@ -27,7 +27,7 @@ static void update(CmScene *scene, double UNUSED dt) {
 static CmSceneInterface *error_display(void) {
   static CmSceneInterface interface = {
       .init = init,
-      .update = update,
+      .frame_update = frame_update,
   };
   return &interface;
 }

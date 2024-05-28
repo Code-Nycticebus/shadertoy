@@ -50,7 +50,7 @@ static void event(CmScene *scene, CmEvent *event) {
   });
 }
 
-static void update(CmScene *scene, double dt) {
+static void frame_update(CmScene *scene, double dt) {
   Toy *toy = scene->data;
   toy->timer += dt;
   if (interval < toy->timer) {
@@ -70,7 +70,7 @@ static void update(CmScene *scene, double dt) {
 static CmSceneInterface *toy(void) {
   static CmSceneInterface interface = {
       .init = init,
-      .update = update,
+      .frame_update = frame_update,
       .event = event,
   };
   return &interface;

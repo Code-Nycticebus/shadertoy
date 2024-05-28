@@ -57,7 +57,7 @@ static void event(CmScene *scene, CmEvent *event) {
   });
 }
 
-static void update(CmScene *scene, double dt) {
+static void frame_update(CmScene *scene, double dt) {
   Shader *shader = scene->data;
 
   cm_shader_bind(&shader->shader);
@@ -73,7 +73,7 @@ static void update(CmScene *scene, double dt) {
 static CmSceneInterface *shader(void) {
   static CmSceneInterface interface = {
       .init = init,
-      .update = update,
+      .frame_update = frame_update,
       .event = event,
   };
   return &interface;
